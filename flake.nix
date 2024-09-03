@@ -41,11 +41,27 @@
             substituteInPlace src/device.rs --replace '/usr/share/razercontrol/laptops.json' '${./razer_control_gui/data/devices/laptops.json}'
           '';
 
+          postBuild = ''
+            # Install .desktop file
+            mkdir -p $out/share/applications
+            touch $out/share/applications/razer-settings.desktop
+            chmod +x $out/share/applications/razer-settings.desktop
+            cat > $out/share/applications/razer-settings.desktop <<EOF
+            [Desktop Entry]
+            Name=Razer Settings
+            Exec=$out/bin/razer-settings
+            Type=Application
+            Categories=Utility;
+            EOF
+            chmod +x $out/share/applications/razer-settings.desktop
+          '';
+
           postInstall = ''
             mkdir -p $out/lib/udev/rules.d
             mkdir -p $out/libexec
             mv $out/bin/daemon $out/libexec
             cp ${./razer_control_gui/data/udev/99-hidraw-permissions.rules} $out/lib/udev/rules.d/99-hidraw-permissions.rules
+
           '';
 
           cargoLock = {
