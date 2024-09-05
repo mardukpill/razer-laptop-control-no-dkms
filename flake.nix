@@ -104,6 +104,8 @@
               serviceConfig = {
                 Type = "simple";
                 ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p %h/.local/share/razercontrol";
+                Restart = "always";
+                RestartSec = 5;
                 ExecStart = "${cfg.package}/libexec/daemon";
               };
               wantedBy = [ "default.target" ];
